@@ -1,6 +1,4 @@
-﻿using Microsoft.Analytics.Interfaces;
-using Microsoft.Analytics.Types.Sql;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,12 +11,66 @@ namespace NA_laba3
         public static double determinant;
         public static int[] countX;
         public static int CountTransposition = 0;
+        #region Гаусс
+        public static double[,] gauss(double[,] A, int n)
+        {
+            determinant = 1;
+            for (int i = 0; i < n; i++)
+            {
+                double buf = A[i, i];
+                determinant *= buf;
+                for (int j = i; j < n + 1; j++) A[i, j] /= buf;
+
+                for (int k = i + 1; k < n; k++)
+                {
+                    buf = A[k, i];
+                    for (int j = i; j < n + 1; j++)
+                        A[k, j] = buf * A[i, j] - A[k, j];
+                }
+            }
+            Output(A, n, n + 1);
+            Console.WriteLine("Determinant = " + determinant);
+            return A;
+        } 
         /// <summary>
-                                                   /// Вывод матрицы
-                                                   /// </summary>
-                                                   /// <param name="A"></param>
-                                                   /// <param name="n"></param>
-                                                   /// <param name="m"></param>
+           /// Инициализация вектора индексов неизвестного Х
+           /// </summary>
+           /// <param name="cX"></param>
+           /// <param name="n"></param>
+           /// <returns></returns>
+        public static int[] InitialX(int[] cX, int n)
+        {
+            int[] countX = new int[n];
+            for (int i = 0; i < n; i++)
+                countX[i] = i;
+            return countX;
+        }
+        public static double[] obr(double[,] A, int n)
+        {
+            InitialX(countX, n);
+            double[] x = new double[n + 1];
+            // int c = n-1;
+            for (int i = n - 1; i >= 0; i--)
+            {
+                double buf = 0;
+                for (int k = i; k < n; k++)
+                {
+                    //if(i!=0)
+                    buf += A[i, k] * x[k];
+                }
+                x[i] = A[i, n] - buf;
+                Console.Write(string.Format("X{0} = {1:F2}\n", i, x[i]));
+                //c--;
+            }
+            return x;
+        }
+        #endregion
+        /// <summary>
+        /// Вывод матрицы
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="n"></param>
+        /// <param name="m"></param>
         public static void Output(double[,] A, int n, int m)
         {
             for (int i = 0; i < n; i++)

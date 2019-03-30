@@ -19,8 +19,56 @@ namespace NA_laba3
 
             double[,] A = Matrix.ExtendedMatrix(A1, d, n);
 
+            //double[,] test = new double[n, n] { { 1, 0, 0, 1 }, { 2, 1, 1, 3 }, { 3, 0, 2, 0 }, { 0, 1, 2, 3 } };
 
+            //double[,] buf = GetMinor(test, n, 0, 1);
+            //for(int i = 0; i < n-1; i++)
+            //{
+            //    for(int j=0;j<n-1;j++)
+            //        Console.Write(buf[i,j]+" ");
+            //    Console.WriteLine();
+            //}
+            //Console.WriteLine(GetDeterminant_4(test, n).ToString());
+
+            Console.WriteLine("Enter k:");
+            int k = int.Parse(Console.ReadLine());
+
+            double[] x = Matrix.obr(Matrix.gauss(A, n), n);
+
+            double[] newX = MethodZeidel(A, d, n, x);
+            for (int i = 0; i < k; i++)
+            {
+
+            }
+
+            Console.ReadLine();
         }
+
+        private static double[] MethodZeidel(double[,] A, double[] B, int n, double[] x_k)
+        {
+            double[] newX = new double[n];
+            for(int i = 0; i < n; i++)
+            {
+                newX[i] = B[i] / A[i, i];
+                for (int j = 0; j < i - 1; j++)
+                {
+                    newX[i] -= (A[i, j] / A[i, i]) * newX[j];
+                }
+                for (int j = i + 1; j < n; j++)
+                {
+                    newX[i] -= (A[i, j] / A[i, i]) * x_k[j];
+                }
+            }
+            return newX;
+        }
+        private static double[] recur(double[,] A,double[] B, int n, double[] x_k, int k)
+        {
+            if (k == 0) return MethodZeidel(A, B, n, x_k);
+
+            return MethodZeidel(A, B, n, x_k);
+        }
+
+        #region Диагональное преобладание
         public static bool IsDiagonalDominance(double[,] A, int n)
         {
             for (int i = 0; i < n; i++)
@@ -31,12 +79,19 @@ namespace NA_laba3
             }
             return true;
         }
+        public static double[,] GetDiagonalDominance(double[,] A, int n)
+        {
 
+            return A;
+        }
+        #endregion
+
+        #region Определитель
         public static double GetDeterminant_3(double[,] A, int n)
         {
             return A[0, 0] * A[1, 1] * A[2, 2] + A[0, 1] * A[1, 2] * A[2, 0] + A[1, 0] * A[2, 1] * A[0, 2] - A[2, 0] * A[1, 1] * A[0, 2] - A[1, 0] * A[0, 1] * A[2, 2] - A[2, 1] * A[1, 2] * A[0, 0];
         }
-        public static double[,] GetMinor(double[,] A, int n, int i,int j)
+        public static double[,] GetMinor(double[,] A, int n, int i, int j)
         {
             double[,] M = new double[n - 1, n - 1];
 
@@ -44,10 +99,13 @@ namespace NA_laba3
             {
                 for (int m = 0; m < n; m++)
                 {
-                    if (i != k && m != j)
-                    {
-                        if (i < k) M[k, m] = A[k, m];
-                    }
+                    //if (i != k && m != j)
+                    //{
+                    if (k < i && m < j) M[k, m] = A[k, m];
+                    if (k > i && m > j) M[k - 1, m - 1] = A[k, m];
+                    if (k > i && m < j) M[k - 1, m] = A[k, m];
+                    if (k < i && m > j) M[k, m - 1] = A[k, m];
+                    //}
                 }
             }
 
@@ -55,17 +113,17 @@ namespace NA_laba3
         }
         public static double GetDeterminant_4(double[,] A, int n)
         {
-            double determ = 1;
-            for(int i = 0; i < n; i++)
+            double determ = 0;
+            for (int i = 0; i < n; i++)
             {
-
+                determ += A[0, i] * Math.Pow(-1, 2 + i) * GetDeterminant_3(GetMinor(A, n, 0, i), n);
             }
             return determ;
         }
-        public static double[,] GetDiagonalDominance(double[,] A,int n)
-        {
+        #endregion
 
-            return A;
-        }
+        #region
+        #endregion
+
     }
 }
