@@ -115,7 +115,7 @@ namespace NA_laba3
                     }
                 }
             }
-            Output(C, n, k);
+            //Output(C, n, k);
             return C;
         }
         /// <summary>
@@ -136,7 +136,7 @@ namespace NA_laba3
                     C[i] += A[i, c] * B[c];
                 }
             }
-            Output(C, n);
+          //  Output(C, n);
             return C;
         }/// <summary>
          /// Ошибка матриц
@@ -144,12 +144,13 @@ namespace NA_laba3
          /// <param name="A"></param>
          /// <param name="n"></param>
          /// <param name="b"></param>
-        public static void Error(double[,] A, double[,] A_1, int n)
+        public static double Error(double[,] A, double[,] A_1, int n)
         {
             double[,] sub = new double[n, n];
             for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) sub[i, j] = Math.Abs(A[i, j] - A_1[i, j]);
             double myB = average(A, n);
             double b = average(sub, n);
+            return b / myB;
             Console.WriteLine("inccuracy = " + b / myB);
             Console.WriteLine("------------------------------------------------------------------");
         }
@@ -159,12 +160,13 @@ namespace NA_laba3
         /// <param name="B"></param>
         /// <param name="B_1"></param>
         /// <param name="n"></param>
-        public static void Error(double[] B, double[] B_1, int n)
+        public static double Error(double[] B, double[] B_1, int n)
         {
             double[] sub = new double[n];
             for (int i = 0; i < n; i++) sub[i] = Math.Abs(B[i] - B_1[i]);
             double b = average(B, n);
             double new_b = average(sub, n);
+            return new_b / b;
             Console.WriteLine("inccuracy = " + new_b / b);
         }
         /// <summary>

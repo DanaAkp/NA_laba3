@@ -11,46 +11,48 @@ namespace NA_laba3
         static void Main(string[] args)
         {
             const int n = 4;
-            double[,] A1 = new double[n, n] { { 2, 0.2, -1, 0 }, { 0.4, -8.5, 0.5, 4 }, { 0.3, -1, 5.2, 1 }, { 1, 0.2, -1, 2.5 } };
-            double[] d = new double[n] { 2.7, 21.9, -3.9, 9.9 };
+            //double[,] A1 = new double[n, n] { { 2, 0.2, -1, 0 }, { 0.4, -8.5, 0.5, 4 }, { 0.3, -1, 5.2, 1 }, { 1, 0.2, -1, 2.5 } };
+            //double[] d = new double[n] { 2.7, 21.9, -3.9, 9.9 };
 
-            //double[,] A1 = new double[n, n] { { -0.86, 0.23, 0.18, 0.17 }, { 0.12, -1.14, 0.08, 0.09 }, { 0.16, 0.24, -1, -0.35 }, { 0.23, -0.08, 0.05, -0.75 } };
-            //double[] d = new double[n] { 1.42, 0.83, -1.21, -0.65 };
+            double[,] A1 = new double[n, n] { { -0.86, 0.23, 0.18, 0.17 }, { 0.12, -1.14, 0.08, 0.09 }, { 0.16, 0.24, -1, -0.35 }, { 0.23, -0.08, 0.05, -0.75 } };
+            double[] d = new double[n] { 1.42, 0.83, -1.21, -0.65 };
 
-            double[,] A = Matrix.ExtendedMatrix(A1, d, n);
-
-            //double[,] test = new double[n, n] { { 1, 0, 0, 1 }, { 2, 1, 1, 3 }, { 3, 0, 2, 0 }, { 0, 1, 2, 3 } };
-
-            //double[,] buf = GetMinor(test, n, 0, 1);
-            //for(int i = 0; i < n-1; i++)
-            //{
-            //    for(int j=0;j<n-1;j++)
-            //        Console.Write(buf[i,j]+" ");
-            //    Console.WriteLine();
-            //}
-            //Console.WriteLine(GetDeterminant_4(test, n).ToString());
-
-            Console.WriteLine("Enter k:");
-            int k = int.Parse(Console.ReadLine());
-
-            double[] x = Matrix.obr(Matrix.gauss(A, n), n);
-
-            double[] newX = MethodZeidel(A, d, n, x);
-            for (int i = 0; i < k; i++)
+            int c = 1;
+            double[] x = d;
+            double[] newX = MethodZeidel(A1, d, n, x);
+            double newE = MAX(x, newX);
+            Console.Write(0+" ");
+            for (int i = 0; i < n; i++) Console.Write(newX[i] + "\t");
+            Console.WriteLine(newE);
+            while (10E-10 < newE)
             {
-
+                x = newX;
+                newX = MethodZeidel(A1, d, n, newX);
+                Console.Write(c+" ");
+                for (int i = 0; i < n; i++) Console.Write(newX[i] + "\t");
+                newE = MAX(x, newX);
+                Console.Write(newE+"\n");
+                c++;
             }
+
+            Console.WriteLine("inccuracy = " + Matrix.Error(d, Matrix.MulMatrix(A1, newX, n, n), n));
 
             Console.ReadLine();
         }
-
+        
+        private static double MAX(double[] x, double[] n_x)
+        {
+            double max = Math.Abs(x[0] - n_x[0]);
+            for (int i = 1; i < x.Length; i++) if (Math.Abs(x[i] - n_x[i]) > max) max = Math.Abs(x[i] - n_x[i]);
+            return max;
+        }
         private static double[] MethodZeidel(double[,] A, double[] B, int n, double[] x_k)
         {
             double[] newX = new double[n];
             for(int i = 0; i < n; i++)
             {
                 newX[i] = B[i] / A[i, i];
-                for (int j = 0; j < i - 1; j++)
+                for (int j = 0; j < i; j++)
                 {
                     newX[i] -= (A[i, j] / A[i, i]) * newX[j];
                 }
